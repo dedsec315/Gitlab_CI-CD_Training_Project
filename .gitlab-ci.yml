@@ -1,4 +1,9 @@
+stages:
+  - build
+  - test
+
 build the website:
+  stage: build
   image: node:latest
   script:
     - npm install
@@ -7,3 +12,9 @@ build the website:
   artifacts:
     paths:
       - ./public
+
+
+test the artifact:
+  stage: test
+  script:
+    - grep "Gatsby" ./public/index.html
