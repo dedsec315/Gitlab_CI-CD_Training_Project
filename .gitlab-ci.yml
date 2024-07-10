@@ -1,6 +1,6 @@
 build the website:
+  image: node:latest
   script:
     - npm install
     - npm install -g gatsby-cli
     - gatsby build
-    
