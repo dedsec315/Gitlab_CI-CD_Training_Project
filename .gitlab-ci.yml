@@ -1,10 +1,12 @@
+image: node:latest
+
 stages:
   - build
   - test
+  - deploy
 
 build the website:
   stage: build
-  image: node:latest
   script:
     - npm install
     - npm install -g gatsby-cli
@@ -21,7 +23,6 @@ test the artifact:
     - grep -q "Gatsby" ./public/index.html
 
 test the website:
-  image: node:latest
   stage: test
   script:
     - npm install 
@@ -29,3 +30,9 @@ test the website:
     - gatsby serve &
     - sleep 3
     - curl  "http://localhost:9000" | grep -q "Gatsby"
+
+deploy to surge:
+  stage: deploy
+  script:
+    - npm install -g surge
+    - surge --project ./public --domain dedsec3.surge.sh
