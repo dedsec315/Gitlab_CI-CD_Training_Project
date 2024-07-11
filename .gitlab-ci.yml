@@ -1,19 +1,19 @@
 image: node:latest
 
 stages:
-  - build
-  - test
-  - deploy
-  - deployement test
+  - Build
+  - Test
+  - Deploy
+  - Deployement tests
 
 build website:
-  stage: build
+  stage: Build
   script:
     - echo $CI_COMMIT_SHORT_SHA
     - npm install
     - npm install -g gatsby-cli
     - gatsby build
-    - sed i "s/%%VERSION/$CI_COMMIT_SHORT_SHA/" ./public/index.html
+    - sed -i "s/%%VERSION/$CI_COMMIT_SHORT_SHA/" ./public/index.html
   artifacts:
     paths:
       - ./public
@@ -21,12 +21,12 @@ build website:
 
 test artifact:
   image: alpine:latest
-  stage: test
+  stage: Test
   script:
     - grep -q "Gatsby" ./public/index.html
 
 test website:
-  stage: test
+  stage: Test
   script:
     - npm install 
     - npm install -g gatsby-cli
@@ -35,13 +35,13 @@ test website:
     - curl  "http://localhost:9000" | grep -q "Gatsby"
 
 deploy to surge:
-  stage: deploy
+  stage: Deploy
   script:
     - npm install -g surge
     - surge --project ./public --domain dedsec3.surge.sh
 
 
 test deployment:
-  stage: deployement test
+  stage: Deployement tests
   script:
     - curl "http://dedsec3.surge.sh" | grep -q "Gatsby"    
