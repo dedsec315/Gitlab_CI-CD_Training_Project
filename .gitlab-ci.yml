@@ -3,8 +3,9 @@ image: node:latest
 stages:
   - Build
   - Test
-  - Deploy
-  - Deployement tests
+  - Deploy staging
+  - Deploy production
+  - Production tests
 
 cache:
     key: ${CI_COMMIT_REF_SLUG}
@@ -41,16 +42,28 @@ test website:
     - curl "http://localhost:9000" | grep -q "Gatsby"
     - curl "http://localhost:9000" | grep -q $CI_COMMIT_SHORT_SHA
 
-deploy to surge:
-  stage: Deploy
+Deploy staging:
+  stage: Deploy staging
   cache: {}
+  environment:
+    name: staging
+    url: http://dedsec3-staging.surge.sh
+  script:
+    - npm install -g surge
+    - surge --project ./public --domain dedsec3-staging.surge.sh
+
+Deploy production:
+  stage: Deploy production
+  cache: {}
+  environment:
+    name: production
+    url: http://dedsec3.surge.sh
   script:
     - npm install -g surge
     - surge --project ./public --domain dedsec3.surge.sh
 
-
-test deployment:
-  stage: Deployement tests
+Production tests:
+  stage: Production tests
   cache: {}
   script:
     - curl "http://dedsec3.surge.sh" | grep -q "Gatsby"    
