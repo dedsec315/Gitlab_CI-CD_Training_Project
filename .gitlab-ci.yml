@@ -27,6 +27,7 @@ build website:
 test artifact:
   image: alpine:latest
   stage: Test
+  cache : {}
   script:
     - grep -q "Gatsby" ./public/index.html
 
@@ -42,6 +43,7 @@ test website:
 
 deploy to surge:
   stage: Deploy
+  cache: {}
   script:
     - npm install -g surge
     - surge --project ./public --domain dedsec3.surge.sh
@@ -49,5 +51,6 @@ deploy to surge:
 
 test deployment:
   stage: Deployement tests
+  cache: {}
   script:
     - curl "http://dedsec3.surge.sh" | grep -q "Gatsby"    
