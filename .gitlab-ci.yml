@@ -6,6 +6,11 @@ stages:
   - Deploy
   - Deployement tests
 
+cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+
 build website:
   stage: Build
   script:
