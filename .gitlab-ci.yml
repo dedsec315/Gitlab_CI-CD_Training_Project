@@ -13,7 +13,7 @@ build website:
     - npm install
     - npm install -g gatsby-cli
     - gatsby build
-    - sed -i "s/%%VERSION/$CI_COMMIT_SHORT_SHA/" ./public/index.html
+    - sed -i "s/%%VERSION%%/$CI_COMMIT_SHORT_SHA/" ./public/index.html
   artifacts:
     paths:
       - ./public
@@ -32,7 +32,8 @@ test website:
     - npm install -g gatsby-cli
     - gatsby serve &
     - sleep 3
-    - curl  "http://localhost:9000" | grep -q "Gatsby"
+    - curl "http://localhost:9000" | grep -q "Gatsby"
+    - curl "http://localhost:9000" | grep -q $CI_COMMIT_SHORT_SHA
 
 deploy to surge:
   stage: Deploy
