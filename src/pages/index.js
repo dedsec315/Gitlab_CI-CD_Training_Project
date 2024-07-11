@@ -115,6 +115,7 @@ const IndexPage = () => (
         {i !== moreLinks.length - 1 && <> · </>}
       </React.Fragment>
     ))}
+    <div>Version: %%VERSION%%</div>
   </Layout>
 )
 

@@ -4,25 +4,28 @@ stages:
   - build
   - test
   - deploy
+  - deployement test
 
-build the website:
+build website:
   stage: build
   script:
+    - echo $CI_COMMIT_SHORT_SHA
     - npm install
     - npm install -g gatsby-cli
     - gatsby build
+    - sed i "s/%%VERSION/$CI_COMMIT_SHORT_SHA/" ./public/index.html
   artifacts:
     paths:
       - ./public
 
 
-test the artifact:
+test artifact:
   image: alpine:latest
   stage: test
   script:
     - grep -q "Gatsby" ./public/index.html
 
-test the website:
+test website:
   stage: test
   script:
     - npm install 
@@ -36,3 +39,9 @@ deploy to surge:
   script:
     - npm install -g surge
     - surge --project ./public --domain dedsec3.surge.sh
+
+
+test deployment:
+  stage: deployement test
+  script:
+    - curl "http://dedsec3.surge.sh" | grep -q "Gatsby"    
