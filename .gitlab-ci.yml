@@ -4,6 +4,7 @@ image: node:latest
 stages:
   - Build
   - Test
+  - deploy review
   - Deploy staging
   - Deploy production
   - Production tests
@@ -52,6 +53,20 @@ test website:
     - sleep 3
     - curl "http://localhost:9000" | grep -q "Gatsby"
     - curl "http://localhost:9000" | grep -q $CI_COMMIT_SHORT_SHA
+
+
+Deploy review:
+  stage: deploy review
+  cache: {}
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: http://dedsec3-$CI_ENVIRONMENT_SLUG.surge.sh
+  only:
+    - merge_requests
+  script:
+    - npm install -g surge
+    - surge --project ./public --domain dedsec3-$CI_ENVIRONMENT_SLUG.surge.sh
+
 
 Deploy staging:
   stage: Deploy staging
