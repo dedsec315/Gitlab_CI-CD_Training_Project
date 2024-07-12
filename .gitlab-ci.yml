@@ -61,7 +61,7 @@ Deploy staging:
     name: staging
     url: http://$STAGING_DOMAIN
   only:
-    - master  
+    - main  
   script:
     - npm install -g surge
     - surge --project ./public --domain $STAGING_DOMAIN
@@ -77,7 +77,7 @@ Deploy production:
   allow_failure: false  
 # Only deploy to production if the branch is mentioned below 
   only:
-    - master
+    - main
   script:
     - npm install -g surge
     - surge --project ./public --domain $PRODUCTION_DOMAIN
@@ -86,6 +86,6 @@ Production tests:
   stage: Production tests 
   cache: {}
   only:
-    - master
+    - main
   script:
     - curl "http://dedsec3.surge.sh" | grep -q "Gatsby"    
