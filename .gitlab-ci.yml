@@ -1,3 +1,4 @@
+#Using the latest node image for all the jobs needed
 image: node:latest
 
 stages:
@@ -7,11 +8,13 @@ stages:
   - Deploy production
   - Production tests
 
+# Using cache to speed up the build 
 cache:
+# Using Key to cache the node_modules folder based on the branch
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - node_modules/
-
+# Using variables to define the staging and production domains
 variables:
   STAGING_DOMAIN : dedsec3-staging.surge.sh
   PRODUCTION_DOMAIN : dedsec3.surge.sh
@@ -23,15 +26,19 @@ build website:
     - npm install
     - npm install -g gatsby-cli
     - gatsby build
+# Using stream editor to replace the version in the index.html file with the commit short sha    
     - sed -i "s/%%VERSION%%/$CI_COMMIT_SHORT_SHA/" ./public/index.html
+# Using artifacts to save the build files    
   artifacts:
     paths:
       - ./public
 
 
 test artifact:
+# Using alpine image to test the artifact due to his small size
   image: alpine:latest
   stage: Test
+#Do not use cache for this job  
   cache : {}
   script:
     - grep -q "Gatsby" ./public/index.html
@@ -49,9 +56,12 @@ test website:
 Deploy staging:
   stage: Deploy staging
   cache: {}
+#Using environment to define the staging environment 
   environment:
     name: staging
     url: http://$STAGING_DOMAIN
+  only:
+    - master  
   script:
     - npm install -g surge
     - surge --project ./public --domain $STAGING_DOMAIN
@@ -62,14 +72,20 @@ Deploy production:
   environment:
     name: production
     url: http://$PRODUCTION_DOMAIN
+  # Integer a manual action to deploy to production and block the next job until the manual action is executed
   when: manual
   allow_failure: false  
+# Only deploy to production if the branch is mentioned below 
+  only:
+    - master
   script:
     - npm install -g surge
     - surge --project ./public --domain $PRODUCTION_DOMAIN
 
 Production tests:
-  stage: Production tests
+  stage: Production tests 
   cache: {}
+  only:
+    - master
   script:
     - curl "http://dedsec3.surge.sh" | grep -q "Gatsby"    
