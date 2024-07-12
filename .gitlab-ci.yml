@@ -12,6 +12,10 @@ cache:
     paths:
       - node_modules/
 
+variables:
+  STAGING_DOMAIN : dedsec3-staging.surge.sh
+  PRODUCTION_DOMAIN : dedsec3.surge.sh
+
 build website:
   stage: Build
   script:
@@ -47,20 +51,20 @@ Deploy staging:
   cache: {}
   environment:
     name: staging
-    url: http://dedsec3-staging.surge.sh
+    url: http://$STAGING_DOMAIN
   script:
     - npm install -g surge
-    - surge --project ./public --domain dedsec3-staging.surge.sh
+    - surge --project ./public --domain $STAGING_DOMAIN
 
 Deploy production:
   stage: Deploy production
   cache: {}
   environment:
     name: production
-    url: http://dedsec3.surge.sh
+    url: http://$PRODUCTION_DOMAIN
   script:
     - npm install -g surge
-    - surge --project ./public --domain dedsec3.surge.sh
+    - surge --project ./public --domain $PRODUCTION_DOMAIN
 
 Production tests:
   stage: Production tests
